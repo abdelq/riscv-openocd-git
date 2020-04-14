@@ -1,19 +1,18 @@
-pkgbase = riscv-openocd
+pkgbase = riscv-openocd-git
 	pkgdesc = Fork of OpenOCD that has RISC-V support
-	pkgver = 20170818.23
+	pkgver = r9141.2e9aad891
 	pkgrel = 1
 	url = https://github.com/riscv/riscv-openocd
-	arch = i686
 	arch = x86_64
 	license = GPL
 	makedepends = git
-	makedepends = automake>=1.11
-	makedepends = autoconf
-	makedepends = libtool
+	makedepends = automake>=1.14
+	makedepends = autoconf>=2.64
 	depends = libftdi
+	depends = libusb
 	depends = hidapi
-	source = riscv-openocd::git+https://github.com/riscv/riscv-openocd.git
+	source = riscv-openocd-git::git+https://github.com/riscv/riscv-openocd.git
 	sha1sums = SKIP
 
-pkgname = riscv-openocd
+pkgname = riscv-openocd-git
 

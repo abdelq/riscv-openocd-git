@@ -1,50 +1,43 @@
-# Maintainer: Emil Renner Berthing <aur@esmil.dk>
+# Maintainer: Abdelhakim Qbaich <abdelhakim@qbaich.com>
+# Contributor: Jiuyang Liu <liujiuyang1994@gmail.com>
+# Contributor: Emil Renner Berthing <aur@esmil.dk>
 
-pkgname=riscv-openocd
-pkgver=20170818.23
+pkgname=riscv-openocd-git
+pkgver=r9141.2e9aad891
 pkgrel=1
 pkgdesc='Fork of OpenOCD that has RISC-V support'
-arch=('i686' 'x86_64')
+arch=('x86_64')
 url='https://github.com/riscv/riscv-openocd'
 license=('GPL')
-depends=('libftdi' 'hidapi')
-makedepends=('git' 'automake>=1.11' 'autoconf' 'libtool')
+depends=('libftdi' 'libusb' 'hidapi')
+makedepends=('git' 'automake>=1.14' 'autoconf>=2.64')
 source=("$pkgname::git+https://github.com/riscv/riscv-openocd.git")
 sha1sums=('SKIP')
 
 pkgver() {
-  cd "$srcdir/$pkgname"
-  local ver="$(git describe --tags)"
-  ver="${ver%-*}"
-  ver="${ver#v}"
-  echo "${ver/-/.}"
+  cd "$pkgname"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
 prepare() {
-  cd "$srcdir/$pkgname"
-  git submodule init
-  git submodule update
+  cd "$pkgname"
+  git submodule update --init --recursive
 }
 
 build() {
-  cd "$srcdir/$pkgname"
+  cd "$pkgname"
 
   ./bootstrap
   ./configure \
     --prefix=/usr \
-    --program-prefix=${pkgname%openocd} \
     --disable-werror \
-    --with-gnu-ld
+    --program-prefix=riscv-
 
-  make pkgdatadir="/usr/share/$pkgname"
+  make pkgdatadir="/usr/share/${pkgname%-git}"
 }
 
 package() {
-  cd "$srcdir/$pkgname"
-
-  make pkgdatadir="/usr/share/$pkgname" DESTDIR="$pkgdir" install
-
+  cd "$pkgname"
+  make pkgdatadir="/usr/share/${pkgname%-git}" DESTDIR="$pkgdir" install
   rm -r "$pkgdir/usr/share/info"
 }
-
-# vim: set ts=2 sw=2 et:
